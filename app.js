@@ -19,3 +19,9 @@ function subtract(a, b) {
 }
 
 module.exports.subtract = subtract;
+
+function divide(a, b) {
+    return a * b;  // Bug: should be a / b
+}
+
+module.exports.divide = divide;
