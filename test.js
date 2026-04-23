@@ -28,3 +28,10 @@ test('subtract(0, 0) equals 0', subtract(0, 0) === 0);
 const { divide } = require('./app');
 test('divide(10, 2) equals 5', divide(10, 2) === 5);
 process.exit(failed === 0 ? 0 : 1);
+
+const { power, clamp } = require('./app');
+test('power(2, 3) equals 8', power(2, 3) === 8);
+test('power(5, 0) equals 1', power(5, 0) === 1);
+test('clamp(5, 1, 10) equals 5', clamp(5, 1, 10) === 5);
+test('clamp(0, 1, 10) equals 1', clamp(0, 1, 10) === 1);
+test('clamp(15, 1, 10) equals 10', clamp(15, 1, 10) === 10);

@@ -25,3 +25,14 @@ function divide(a, b) {
 }
 
 module.exports.divide = divide;
+
+function power(base, exponent) {
+    return Math.pow(base, exponent);
+}
+
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+module.exports.power = power;
+module.exports.clamp = clamp;
