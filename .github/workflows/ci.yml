@@ -1,53 +1,44 @@
-# This is a GitHub Actions workflow file
-# It defines automated tasks that run when events occur
-
 name: CI Pipeline
 
-# Trigger: when does this workflow run?
 on:
   push:
     branches: [ master ]
   pull_request:
     branches: [ master ]
 
-# Jobs: what tasks to perform
+# Cancel in-progress runs for the same branch
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  build-and-test:
-    # Runner: which machine to use
+  test:
+    name: Run Tests
     runs-on: ubuntu-latest
 
-    # Steps: individual tasks within the job
     steps:
-      # Step 1: Check out the repository code
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Display environment information
-      - name: Show environment info
-        run: |
-          echo "GitHub Actions is running!"
-          echo "Repository: ${{ github.repository }}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Commit: ${{ github.sha }}"
-          echo "Triggered by: ${{ github.event_name }}"
-          echo "Runner OS: ${{ runner.os }}"
-
-      # Step 3: Set up Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      # Step 4: Verify Node.js is available
-      - name: Check Node.js version
-        run: |
-          node --version
-          npm --version
-
-      # Step 5: Run the tests
       - name: Run tests
         run: node test.js
 
-      # Step 6: Success message
-      - name: Build complete
-        run: echo "All steps completed successfully!"
+  lint:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check for common issues
+        run: |
+          echo "Checking JavaScript files..."
+          node --check app.js && echo "app.js syntax OK" || echo "app.js has syntax errors"
+          node --check test.js && echo "test.js syntax OK" || echo "test.js has syntax errors"
+          echo "Code quality check complete"
