@@ -6,24 +6,27 @@ on:
   pull_request:
     branches: [ master ]
 
-# Cancel in-progress runs for the same branch
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   test:
-    name: Run Tests
+    name: Test (Node ${{ matrix.node-version }})
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18, 20]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: ${{ matrix.node-version }}
 
       - name: Run tests
         run: node test.js
@@ -36,9 +39,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check for common issues
+      - name: Check syntax
         run: |
-          echo "Checking JavaScript files..."
-          node --check app.js && echo "app.js syntax OK" || echo "app.js has syntax errors"
-          node --check test.js && echo "test.js syntax OK" || echo "test.js has syntax errors"
-          echo "Code quality check complete"
+          node --check app.js && echo "app.js syntax OK"
+          node --check test.js && echo "test.js syntax OK"
