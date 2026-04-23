@@ -21,3 +21,7 @@ test('multiply(0, 5) equals 0', multiply(0, 5) === 0);
 
 console.log(`\nResults: ${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);
+
+const { subtract } = require('./app');
+test('subtract(5, 3) equals 2', subtract(5, 3) === 2);
+test('subtract(0, 0) equals 0', subtract(0, 0) === 0);
