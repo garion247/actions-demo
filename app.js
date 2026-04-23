@@ -13,3 +13,9 @@ function multiply(a, b) {
 // TODO (feature/buggy-divide): add divide(a, b) function — watch the CI catch the bug!
 
 module.exports = { add, multiply };
+
+function subtract(a, b) {
+    return a - b;
+}
+
+module.exports.subtract = subtract;
