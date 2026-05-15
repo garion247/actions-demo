@@ -1,0 +1,25 @@
+name: Test Composite Action
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [ 18, 20 ]
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: setup
+        uses: ./.github/actions/setup-and-test
+        with:
+          node-version: ${{ matrix.node }}
+          run-tests: 'true'
+
+      - name: Report
+        run: |
+          echo "Node ${{ matrix.node }}: cache-hit=${{ steps.setup.outputs.cache-hit }}"
