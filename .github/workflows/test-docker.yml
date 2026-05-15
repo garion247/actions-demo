@@ -1,0 +1,23 @@
+name: Test Docker Action
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  stamp:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build stamp
+        id: stamp
+        uses: ./.github/actions/build-stamper
+        with:
+          app_name: actions-demo
+
+      - name: Show stamp
+        run: |
+          echo "Stamp written to: ${{ steps.stamp.outputs.stamp-path }}"
+          cat "${{ steps.stamp.outputs.stamp-path }}"

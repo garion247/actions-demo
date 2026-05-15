@@ -1,0 +1,22 @@
+name: 'Build Stamper'
+description: 'Writes a JSON build stamp to a file in the workspace'
+branding:
+  icon: 'tag'
+  color: 'blue'
+
+inputs:
+  app_name:
+    description: 'Name of the application'
+    required: true
+  output_file:
+    description: 'Path (relative to workspace) where the stamp will be written'
+    required: false
+    default: 'build-stamp.json'
+
+outputs:
+  stamp-path:
+    description: 'Path of the written stamp file'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
