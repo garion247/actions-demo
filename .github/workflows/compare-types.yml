@@ -1,0 +1,57 @@
+name: Compare Action Types
+
+on:
+  push:
+    branches: [ master ]
+  workflow_dispatch:
+
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Time JavaScript action
+        id: js-time
+        run: echo "start=$(date +%s%3N)" >> "$GITHUB_OUTPUT"
+
+      - uses: garion247/js-action-demo@v1
+        with:
+          name: 'comparison'
+
+      - name: Mark JS end
+        run: echo "JS finished at $(date +%s%3N)"
+
+      - name: Time Docker action
+        id: docker-time
+        run: echo "start=$(date +%s%3N)" >> "$GITHUB_OUTPUT"
+
+      - uses: ./.github/actions/build-stamper
+        with:
+          app_name: comparison
+
+      - name: Mark Docker end
+        run: echo "Docker finished at $(date +%s%3N)"
+
+      - name: Time composite action
+        id: composite-time
+        run: echo "start=$(date +%s%3N)" >> "$GITHUB_OUTPUT"
+
+      - uses: ./.github/actions/setup-and-test
+        with:
+          run-tests: 'false'
+
+      - name: Mark composite end
+        run: echo "Composite finished at $(date +%s%3N)"
+
+      - name: Write comparison summary
+        run: |
+          {
+            echo "## Action Type Comparison"
+            echo ""
+            echo "| Type | Startup cost | Runner support | Dependencies | Best for |"
+            echo "|------|--------------|----------------|--------------|----------|"
+            echo "| JavaScript | Fastest (no container, no install) | Linux / Windows / macOS | Bundled into \`dist/\` with ncc | Most custom logic, GitHub API calls |"
+            echo "| Docker | Slowest first call (image build) | Linux only | Anything you can install in the image | Non-Node languages, system tools, sealed envs |"
+            echo "| Composite | Fast (just steps) | Linux / Windows / macOS | None of its own; reuses other actions | Encapsulating a pattern of \`uses:\` + \`run:\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
